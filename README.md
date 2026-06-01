@@ -47,7 +47,7 @@ k6 version
 
 ### 1. Clonar el repositorio
 ```bash
-https://github.com/BelenO11/prueba-performance-k6/edit/main/README.md
+https://github.com/BelenO11/prueba-api-karate-demoblaze.git
 ```
 ### 2. Ejecutar la prueba
 ```bash
