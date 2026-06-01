@@ -1,0 +1,90 @@
+CONCLUSIONES - EJERCICIO DE PERFORMANCE: PRUEBA DE CARGA LOGIN
+===============================================================
+
+SERVICIO EVALUADO: POST https://fakestoreapi.com/auth/login
+HERRAMIENTA: K6 v0.54.0+
+FECHA: Mayo 2026
+
+ESCENARIO EJECUTADO:
+---------------------
+- Rampa de subida: 0 → 20 TPS en 60 segundos
+- Carga sostenida: 20 TPS durante 60 segundos
+- Rampa de bajada: 20 → 0 TPS en 20 segundos
+- Duración total: ~140 segundos
+
+DATOS DE ENTRADA:
+------------------
+Se parametrizaron 5 usuarios desde el archivo usuarios.csv:
+  - donero / ewedon
+  - kevinryan / kev02937@
+  - johnd / m38rmF$
+  - derek / jklg*_56
+  - mor_2314 / 83r5^_
+
+La selección de usuario por iteración es aleatoria, simulando
+concurrencia real con múltiples credenciales.
+
+UMBRALES DEFINIDOS:
+--------------------
+  - Tiempo de respuesta (P95): ≤ 1500 ms
+  - Tasa de error:             < 3%
+  - TPS objetivo:              ≥ 20 TPS
+
+HALLAZGOS:
+-----------
+
+1. COMPORTAMIENTO GENERAL DEL SERVICIO:
+   FakeStore API es un servicio de demostración con infraestructura limitada.
+   Bajo condiciones de carga sostenida de 20 TPS, el servicio puede presentar
+   latencias variables dependiendo del momento de ejecución y la carga global
+   del servidor compartido.
+
+2. PARAMETRIZACIÓN DESDE CSV:
+   La funcionalidad de SharedArray de K6 permite cargar el CSV una sola vez
+   en memoria y compartirlo entre todos los VUs (Virtual Users), lo cual es
+   eficiente y evita recargas redundantes del archivo en cada iteración.
+
+3. VALIDACIONES IMPLEMENTADAS:
+   Se implementaron 3 validaciones por request:
+   a) HTTP 200: Confirma que el servicio responde correctamente
+   b) Token presente: Valida que la respuesta contiene un JWT/token válido
+   c) Tiempo ≤ 1500ms: Valida el umbral de tiempo en cada petición individual
+
+4. MÉTRICAS PERSONALIZADAS:
+   Se crearon métricas personalizadas (tasa_error, duracion_login_ms) que
+   permiten separar las métricas de este endpoint específico del resto de
+   métricas genéricas de K6, facilitando el análisis granular.
+
+5. EXECUTOR RAMPING-ARRIVAL-RATE:
+   Se eligió este executor porque controla directamente los TPS (transacciones
+   por segundo), a diferencia de ramping-vus que controla usuarios virtuales
+   concurrentes. Esto garantiza que el escenario alcance exactamente 20 TPS
+   independientemente del tiempo de respuesta del servidor.
+
+OBSERVACIONES TÉCNICAS:
+------------------------
+
+1. [IMPORTANTE] FakeStore API acepta cualquier contraseña para usuarios válidos,
+   por lo que las credenciales del CSV todas deberían retornar token exitosamente.
+   Si algún usuario retorna error, puede deberse a throttling del servidor.
+
+2. [RECOMENDACIÓN] Para pruebas en entornos productivos, el umbral de tiempo
+   debería ajustarse según SLA definido con el negocio. El 1500ms es un umbral
+   conservador para una API de autenticación.
+
+3. [RECOMENDACIÓN] Se recomienda ejecutar la prueba en horarios de baja demanda
+   para reducir la variabilidad introducida por carga externa en el servidor.
+
+4. [RECOMENDACIÓN] Para un análisis más completo, integrar K6 con Grafana +
+   InfluxDB permitiría visualización en tiempo real de las métricas durante
+   la ejecución de la prueba.
+
+CONCLUSIÓN GENERAL:
+--------------------
+El script de K6 implementado cumple con todos los requerimientos del ejercicio:
+alcanza los 20 TPS mediante rampa progresiva, parametriza los usuarios desde
+CSV con selección aleatoria, y valida los umbrales de tiempo de respuesta (1500ms)
+y tasa de error (3%) mediante thresholds nativos de K6.
+
+El uso de ramping-arrival-rate asegura control preciso sobre el TPS objetivo,
+y las métricas personalizadas facilitan el análisis post-ejecución.
