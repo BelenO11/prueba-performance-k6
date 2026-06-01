@@ -1,45 +1,34 @@
-# ⚡ Ejercicio de Performance - Prueba de Carga Login | K6
+# Ejercicio de Performance - Prueba de Carga Login | K6
 
 Prueba de carga sobre el endpoint de autenticación de [FakeStore API](https://fakestoreapi.com/auth/login) usando **K6**.
 
----
-
-## 🎯 Objetivo
+## Objetivo
 
 Validar que el servicio de login soporte al menos **20 TPS** cumpliendo:
-- ⏱️ Tiempo de respuesta (P95) ≤ **1500 ms**
-- ❌ Tasa de error < **3%**
+Tiempo de respuesta (P95) ≤ **1500 ms**
+Tasa de error < **3%**
 
----
+## Tecnologías utilizadas
 
-## 🏗️ Tecnologías utilizadas
+Tecnología y Versión 
+K6 - 0.54.0+ 
+Node.js  18+
+Sistema Operativo - Windows 
 
-| Tecnología | Versión |
-|---|---|
-| K6 | 0.54.0+ |
-| Node.js (opcional) | 18+ |
-| Sistema Operativo | Windows / macOS / Linux |
+##  Estructura del proyecto
 
----
-
-## 📁 Estructura del proyecto
-
-```
 ejercicio-performance/
-├── k6-script/
-│   ├── login_load_test.js   --> Script principal de K6
-│   └── usuarios.csv         --> Datos de entrada parametrizados
-├── reporte/
-│   └── resumen-prueba.txt   --> Generado automáticamente al ejecutar
-├── README.md
-└── conclusiones.txt
-```
+  k6-script/
+        login_load_test.js   --> Script principal de K6
+        usuarios.csv         --> Datos de entrada parametrizados
+reporte
+     resumen-prueba.txt   --> Generado automáticamente al ejecutar
+  README.md
+  conclusiones.txt
 
----
+##  Pre-requisitos
 
-## ⚙️ Pre-requisitos
-
-### Instalar K6
+## Instalar K6
 
 **Windows (con Chocolatey):**
 ```bash
@@ -50,53 +39,29 @@ choco install k6
 Descargar el instalador desde: https://github.com/grafana/k6/releases/latest
 → Elegir el archivo `.msi` para Windows
 
-**macOS:**
-```bash
-brew install k6
-```
-
-**Linux (Debian/Ubuntu):**
-```bash
-sudo gpg -k
-sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
-echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-sudo apt-get update
-sudo apt-get install k6
-```
-
 **Verificar instalación:**
 ```bash
 k6 version
-```
 
----
-
-## 🚀 Instrucciones de ejecución
+##  Instrucciones de ejecución
 
 ### 1. Clonar el repositorio
 ```bash
-git clone <url-de-este-repositorio>
-cd ejercicio-performance
+https://github.com/BelenO11/prueba-performance-k6/edit/main/README.md
 ```
-
 ### 2. Ejecutar la prueba
 ```bash
 k6 run k6-script/login_load_test.js
 ```
-
 ### 3. Ejecutar con reporte JSON (opcional)
 ```bash
 k6 run --out json=reporte/resultados.json k6-script/login_load_test.js
 ```
-
 ### 4. Ejecutar con reporte HTML (opcional, requiere k6-reporter)
 ```bash
 k6 run --out json=reporte/resultados.json k6-script/login_load_test.js
 ```
-
----
-
-## 📊 Escenario de carga
+##  Escenario de carga
 
 ```
 TPS
@@ -117,18 +82,15 @@ TPS
 | Rampa bajada | 20s | 20 → 0 TPS |
 | **Total** | **140s** | |
 
----
 
-## ✅ Validaciones por petición
+## Validaciones por petición
 
 Cada request valida:
 1. HTTP Status = 200
 2. Body contiene campo `token`
 3. Tiempo de respuesta ≤ 1500 ms
 
----
-
-## 📋 Datos de entrada (usuarios.csv)
+##  Datos de entrada (usuarios.csv)
 
 Los usuarios se cargan desde `k6-script/usuarios.csv` y se seleccionan aleatoriamente en cada iteración:
 
@@ -140,8 +102,7 @@ Los usuarios se cargan desde `k6-script/usuarios.csv` y se seleccionan aleatoria
 | derek | jklg*_56 |
 | mor_2314 | 83r5^_ |
 
----
 
-## 🔍 Hallazgos y conclusiones
+## Hallazgos y conclusiones
 
-Ver el archivo [`conclusiones.txt`](./conclusiones.txt) para los hallazgos de la prueba.
+Ver el archivo `conclusiones.txt` para los hallazgos de la prueba.
