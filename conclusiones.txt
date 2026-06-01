@@ -1,19 +1,18 @@
 CONCLUSIONES - EJERCICIO DE PERFORMANCE: PRUEBA DE CARGA LOGIN
-===============================================================
 
 SERVICIO EVALUADO: POST https://fakestoreapi.com/auth/login
 HERRAMIENTA: K6 v0.54.0+
 FECHA: Mayo 2026
 
 ESCENARIO EJECUTADO:
----------------------
+
 - Rampa de subida: 0 → 20 TPS en 60 segundos
 - Carga sostenida: 20 TPS durante 60 segundos
 - Rampa de bajada: 20 → 0 TPS en 20 segundos
 - Duración total: ~140 segundos
 
 DATOS DE ENTRADA:
-------------------
+
 Se parametrizaron 5 usuarios desde el archivo usuarios.csv:
   - donero / ewedon
   - kevinryan / kev02937@
@@ -22,16 +21,15 @@ Se parametrizaron 5 usuarios desde el archivo usuarios.csv:
   - mor_2314 / 83r5^_
 
 La selección de usuario por iteración es aleatoria, simulando
-concurrencia real con múltiples credenciales.
+concurrencia real con múltiples credlenciales.
 
 UMBRALES DEFINIDOS:
---------------------
+
   - Tiempo de respuesta (P95): ≤ 1500 ms
   - Tasa de error:             < 3%
   - TPS objetivo:              ≥ 20 TPS
 
 HALLAZGOS:
------------
 
 1. COMPORTAMIENTO GENERAL DEL SERVICIO:
    FakeStore API es un servicio de demostración con infraestructura limitada.
@@ -62,25 +60,23 @@ HALLAZGOS:
    independientemente del tiempo de respuesta del servidor.
 
 OBSERVACIONES TÉCNICAS:
-------------------------
 
-1. [IMPORTANTE] FakeStore API acepta cualquier contraseña para usuarios válidos,
+1. FakeStore API acepta cualquier contraseña para usuarios válidos,
    por lo que las credenciales del CSV todas deberían retornar token exitosamente.
    Si algún usuario retorna error, puede deberse a throttling del servidor.
 
-2. [RECOMENDACIÓN] Para pruebas en entornos productivos, el umbral de tiempo
+2. Para pruebas en entornos productivos, el umbral de tiempo
    debería ajustarse según SLA definido con el negocio. El 1500ms es un umbral
    conservador para una API de autenticación.
 
-3. [RECOMENDACIÓN] Se recomienda ejecutar la prueba en horarios de baja demanda
+3. RSe recomienda ejecutar la prueba en horarios de baja demanda
    para reducir la variabilidad introducida por carga externa en el servidor.
 
-4. [RECOMENDACIÓN] Para un análisis más completo, integrar K6 con Grafana +
+4. Para un análisis más completo, integrar K6 con Grafana +
    InfluxDB permitiría visualización en tiempo real de las métricas durante
    la ejecución de la prueba.
 
-CONCLUSIÓN GENERAL:
---------------------
+CONCLUSIÓN GENERAL: 
 El script de K6 implementado cumple con todos los requerimientos del ejercicio:
 alcanza los 20 TPS mediante rampa progresiva, parametriza los usuarios desde
 CSV con selección aleatoria, y valida los umbrales de tiempo de respuesta (1500ms)
